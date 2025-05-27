@@ -21,8 +21,13 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 document.getElementById("search").addEventListener("input", (e) => {
-  const query = e.target.value.toLowerCase();
-  const filtered = catalog.getAllProducts().filter(product =>
+  const target = e.target;
+
+  if (!(target instanceof HTMLInputElement)) return;
+
+  const query = target.value.toLowerCase();
+
+  const filtered = catalog.getAllProducts().filter((product) =>
     product.name.toLowerCase().includes(query) ||
     product.description.toLowerCase().includes(query)
   );
