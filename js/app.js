@@ -1,6 +1,8 @@
 const cart = new Cart();
 const catalog = new ProductCatalog();
 
+initialProducts.forEach(product => catalog.addProduct(product));
+
 window.addEventListener("DOMContentLoaded", () => {
   const userData = JSON.parse(localStorage.getItem("user"));
 
@@ -13,41 +15,26 @@ window.addEventListener("DOMContentLoaded", () => {
   if (nameEl) {
     nameEl.textContent = userData.username;
   }
+
+  renderCatalog();
+  setupCartSummary();
 });
 
+document.getElementById("search").addEventListener("input", (e) => {
+  const query = e.target.value.toLowerCase();
+  const filtered = catalog.getAllProducts().filter(product =>
+    product.name.toLowerCase().includes(query) ||
+    product.description.toLowerCase().includes(query)
+  );
 
+  renderCatalog(filtered);
+});
 
-catalog.addProduct(new Product(1, "Кофе", 150, "100% арабика"));
-catalog.addProduct(new Product(2, "Чай", 90, "Зеленый с жасмином"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-catalog.addProduct(new Product(3, "Мёд", 250, "Натуральный цветочный"));
-
-function renderCatalog() {
+function renderCatalog(productsToRender = catalog.getAllProducts()) {
   const container = document.getElementById("catalog");
-  catalog.getAllProducts().forEach(product => {
+  container.innerHTML = "";
+
+  productsToRender.forEach(product => {
     const card = document.createElement("div");
     card.className = "product-card";
     card.innerHTML = `
@@ -72,8 +59,3 @@ function setupCartSummary() {
   document.querySelector(".main-layout").appendChild(summary);
   cart.renderSummary();
 }
-
-window.onload = () => {
-  renderCatalog();
-  setupCartSummary();
-};
