@@ -1,15 +1,18 @@
 class Cart {
   constructor() {
-    this.items = [];
+    this.items = this.loadFromCookie();
+    this.renderSummary();
   }
 
   addToCart(product) {
     this.items.push(product);
+    this.saveToCookie();
     this.renderSummary();
   }
 
-  removeFromCart(product) {
-    this.items = this.items.filter(x => x.id === product);
+  removeFromCart(productId) {
+    this.items = this.items.filter(x => x.id !== productId);
+    this.saveToCookie();
     this.renderSummary();
   }
 
@@ -19,8 +22,14 @@ class Cart {
 
   clear() {
     this.items = [];
+    this.saveToCookie();
     this.renderSummary();
   }
+
+  getItems() {
+    return this.items;
+  }
+
 
   renderSummary() {
     const summary = document.getElementById("cart-summary");
@@ -33,5 +42,20 @@ class Cart {
     `;
 
     document.getElementById("clear-cart").onclick = () => this.clear();
+  }
+
+  saveToCookie() {
+    const minimalItems = this.items.map(({id, name, price}) => ({id, name, price}));
+    document.cookie = `cart=${encodeURIComponent(JSON.stringify(minimalItems))}; path=/; max-age=2592000`;
+  }
+
+  loadFromCookie() {
+    const cookieStr = document.cookie.split('; ').find(row => row.startsWith('cart='));
+    if (!cookieStr) return [];
+    try {
+      return JSON.parse(decodeURIComponent(cookieStr.split('=')[1]));
+    } catch {
+      return [];
+    }
   }
 }

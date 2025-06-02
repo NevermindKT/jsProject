@@ -17,7 +17,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   renderCatalog();
-  setupCartSummary();
 });
 
 document.getElementById("search").addEventListener("input", (e) => {
@@ -33,7 +32,13 @@ document.getElementById("search").addEventListener("input", (e) => {
   );
 
   renderCatalog(filtered);
+
 });
+
+document.getElementById("cart-button").addEventListener("click", () => {
+  window.location.href = "cart.html";
+});
+
 
 function renderCatalog(productsToRender = catalog.getAllProducts()) {
   const container = document.getElementById("catalog");
@@ -58,9 +63,16 @@ function renderCatalog(productsToRender = catalog.getAllProducts()) {
 }
 
 function setupCartSummary() {
+  const container = document.querySelector(".main-layout-with-sidebar");
+  if (!container) {
+    console.warn("main-layout не найден, пропускаем setupCartSummary");
+    return;
+  }
+
   const summary = document.createElement("div");
   summary.id = "cart-summary";
   summary.style.marginTop = "20px";
-  document.querySelector(".main-layout").appendChild(summary);
+
+  container.appendChild(summary);
   cart.renderSummary();
 }
