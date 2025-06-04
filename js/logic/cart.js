@@ -29,7 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
     container.appendChild(div);
   });
 
-  totalEl.textContent = `Общая сумма: ${cart.totalPrice()} грн`;
+  totalEl.textContent = `Общая сумма: ${cart.totalPrice().toFixed(2)} грн`;
 
   buyBtn.onclick = () => {
     alert("Покупка совершена!");

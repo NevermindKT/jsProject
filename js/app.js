@@ -1,7 +1,22 @@
 const cart = new Cart();
 const catalog = new ProductCatalog();
 
-initialProducts.forEach(product => catalog.addProduct(product));
+window.addEventListener("DOMContentLoaded", async () => {
+  const userData = JSON.parse(localStorage.getItem("user"));
+
+  if (!userData) {
+    window.location.href = "register.html";
+    return;
+  }
+
+  const nameEl = document.getElementById("user-name");
+  if (nameEl) {
+    nameEl.textContent = userData.username;
+  }
+
+  await loadProductsFromAPI();
+  renderCatalog();
+});
 
 window.addEventListener("DOMContentLoaded", () => {
   const userData = JSON.parse(localStorage.getItem("user"));
@@ -49,6 +64,7 @@ function renderCatalog(productsToRender = catalog.getAllProducts()) {
     card.className = "product-card";
     card.innerHTML = `
       <h3>${product.name}</h3>
+      <img src="${product.image}" alt="${product.name}"><br>
       <p>${product.description}</p>
       <strong>${product.price} грн</strong><br>
       <button data-id="${product.id}">Добавить в корзину</button>
@@ -65,7 +81,7 @@ function renderCatalog(productsToRender = catalog.getAllProducts()) {
 function setupCartSummary() {
   const container = document.querySelector(".main-layout-with-sidebar");
   if (!container) {
-    console.warn("main-layout не найден, пропускаем setupCartSummary");
+    console.warn("main-layout не найден");
     return;
   }
 
@@ -75,4 +91,25 @@ function setupCartSummary() {
 
   container.appendChild(summary);
   cart.renderSummary();
+}
+
+async function loadProductsFromAPI() {
+  try {
+    const response = await fetch("https://fakestoreapi.com/products");
+    const data = await response.json();
+
+    data.forEach(p => {
+
+      const product = {
+        id: p.id,
+        name: p.title,
+        price: p.price,
+        description: p.description,
+        image: p.image,
+      };
+      catalog.addProduct(product);
+    });
+  } catch (err) {
+    console.error("Ошибка при загрузке товаров:", err);
+  }
 }
