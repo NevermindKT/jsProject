@@ -62,6 +62,11 @@ function renderCatalog(productsToRender = catalog.getAllProducts()) {
   productsToRender.forEach(product => {
     const card = document.createElement("div");
     card.className = "product-card";
+
+    card.addEventListener("click", () => {
+      window.location.href = `product.html?id=${product.id}`;
+    });
+
     card.innerHTML = `
       <h3>${product.name}</h3>
       <img src="${product.image}" alt="${product.name}"><br>
@@ -71,6 +76,7 @@ function renderCatalog(productsToRender = catalog.getAllProducts()) {
     `;
 
     card.querySelector("button").addEventListener("click", () => {
+      e.stopPropagation();
       cart.addToCart(product);
     });
 
